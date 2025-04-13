@@ -1,0 +1,6 @@
+@FluentCandleStick.Server_HostAddress = http://localhost:5057
+
+GET {{FluentCandleStick.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

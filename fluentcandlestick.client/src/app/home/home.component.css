@@ -1,0 +1,121 @@
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+h2 {
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.file-upload-section {
+  margin-bottom: 30px;
+  background-color: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.file-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #666;
+}
+
+.error {
+  color: #f44336;
+  margin-top: 5px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f8f8f8;
+  font-weight: bold;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+}
+
+.price-up {
+  background-color: rgba(0, 128, 0, 0.1);
+}
+
+.price-up:hover {
+  background-color: rgba(0, 128, 0, 0.2);
+}
+
+.price-down {
+  background-color: rgba(255, 0, 0, 0.1);
+}
+
+.price-down:hover {
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+.no-data {
+  text-align: center;
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.csv-format {
+  margin-top: 20px;
+  color: #666;
+  font-family: monospace;
+  text-align: left;
+  background-color: #f1f1f1;
+  padding: 15px;
+  border-radius: 4px;
+}

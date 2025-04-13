@@ -1,8 +1,8 @@
 ﻿// Add new migration
-dotnet-ef migrations add "Init" --context "FluentCandleStickDbContext" --project FluentCandleStick.Database --startup-project FluentCandleStick
+dotnet-ef migrations add "Init" --context "FluentCandleStickDbContext" --project FluentCandleStick.Database --startup-project FluentCandleStick.Server
 
 // Update database
-dotnet-ef database update --context "FluentCandleStickDbContext" --project FluentCandleStick.Database --startup-project FluentCandleStick
+dotnet-ef database update --context "FluentCandleStickDbContext" --project FluentCandleStick.Database --startup-project FluentCandleStick.Server
 
 // Remove migration
-dotnet-ef migrations remove --context "FluentCandleStickDbContext" --project FluentCandleStick.Database --startup-project FluentCandleStick
+dotnet-ef migrations remove --context "FluentCandleStickDbContext" --project FluentCandleStick.Database --startup-project FluentCandleStick.Server
