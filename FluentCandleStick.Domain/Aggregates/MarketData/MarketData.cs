@@ -1,4 +1,4 @@
-﻿namespace FluentCandleStick.Domain.Aggregates.CandleStick;
+﻿namespace FluentCandleStick.Domain.Aggregates.MarketData;
 
 public class MarketData
 {

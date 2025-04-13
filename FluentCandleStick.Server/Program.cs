@@ -1,6 +1,5 @@
 using FluentCandleStick.Application;
 using FluentCandleStick.Database;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

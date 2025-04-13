@@ -1,7 +1,8 @@
-﻿namespace FluentCandleStick.Domain.Aggregates.MarketData;
+﻿namespace FluentCandleStick.Domain.Aggregates.CandleStick;
 
 public class CandleStick
 {
+    // Guid might be better?
     public int Id { get; set; }
     public DateTime Time { get; set; }
     public decimal Open { get; set; }

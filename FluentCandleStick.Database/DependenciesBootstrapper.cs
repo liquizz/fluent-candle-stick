@@ -1,3 +1,6 @@
+using FluentCandleStick.Database.Repositories;
+using FluentCandleStick.Domain.Aggregates.CandleStick.Interfaces;
+using FluentCandleStick.Domain.Aggregates.MarketData.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -9,6 +12,9 @@ public static class DependenciesBootstrapper
     {
         services.AddDbContext<FluentCandleStickDbContext>(options =>
             options.UseSqlite(connectionString));
+
+        services.AddScoped<ICandleStickRepository, CandleStickRepository>();
+        services.AddScoped<IMarketDataRepository, MarketDataRepository>();
         
         return services;
     }

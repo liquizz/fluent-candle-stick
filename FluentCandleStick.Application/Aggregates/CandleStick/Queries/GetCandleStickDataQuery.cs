@@ -1,5 +1,4 @@
 using FluentCandleStick.Database;
-using FluentCandleStick.Domain.Aggregates.MarketData;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

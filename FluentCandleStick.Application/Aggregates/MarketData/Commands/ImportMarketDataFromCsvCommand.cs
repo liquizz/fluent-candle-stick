@@ -1,30 +1,28 @@
 using CsvHelper;
 using CsvHelper.Configuration;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using FluentCandleStick.Database;
+using FluentCandleStick.Domain.Aggregates.CandleStick.Interfaces;
+using FluentCandleStick.Domain.Aggregates.MarketData.Interfaces;
 
 namespace FluentCandleStick.Application.Aggregates.MarketData.Commands;
 
 public record ImportMarketDataFromCsvCommand(Stream CsvFileStream) : IRequest<bool>;
 
-public class ImportMarketDataFromCsvCommandHandler : IRequestHandler<ImportMarketDataFromCsvCommand, bool>
+public class ImportMarketDataFromCsvCommandHandler(
+    IMarketDataRepository marketDataRepository,
+    ICandleStickRepository candleStickRepository
+    )
+    : IRequestHandler<ImportMarketDataFromCsvCommand, bool>
 {
-    private readonly FluentCandleStickDbContext _dbContext;
-
-    public ImportMarketDataFromCsvCommandHandler(FluentCandleStickDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public async Task<bool> Handle(ImportMarketDataFromCsvCommand request, CancellationToken cancellationToken)
     {
         try
         {
             // Clear existing data
-            await _dbContext.MarketData.ExecuteDeleteAsync(cancellationToken);
-            await _dbContext.CandleSticks.ExecuteDeleteAsync(cancellationToken);
+            await marketDataRepository.ClearAsync(cancellationToken);
+            await candleStickRepository.ClearAsync(cancellationToken);
+            await marketDataRepository.SaveChangesAsync(cancellationToken);
             
             // Read CSV data
             using var reader = new StreamReader(request.CsvFileStream);
@@ -37,11 +35,11 @@ public class ImportMarketDataFromCsvCommandHandler : IRequestHandler<ImportMarke
             });
             
             csv.Context.RegisterClassMap<MarketDataMap>();
-            var records = csv.GetRecords<Domain.Aggregates.CandleStick.MarketData>().ToList();
+            var records = csv.GetRecords<Domain.Aggregates.MarketData.MarketData>().ToList();
             
             // Add data to database
-            await _dbContext.MarketData.AddRangeAsync(records, cancellationToken);
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            await marketDataRepository.InsertRangeAsync(records, cancellationToken);
+            await marketDataRepository.SaveChangesAsync(cancellationToken);
             
             // Calculate and save candlestick data
             await CalculateCandleSticks(cancellationToken);
@@ -57,9 +55,7 @@ public class ImportMarketDataFromCsvCommandHandler : IRequestHandler<ImportMarke
     private async Task CalculateCandleSticks(CancellationToken cancellationToken)
     {
         // Get all market data ordered by time
-        var marketData = await _dbContext.MarketData
-            .OrderBy(md => md.Time)
-            .ToListAsync(cancellationToken);
+        var marketData = await marketDataRepository.GetOrderedByTimeAsync();
         
         if (!marketData.Any())
             return;
@@ -68,7 +64,7 @@ public class ImportMarketDataFromCsvCommandHandler : IRequestHandler<ImportMarke
         var groupedByMinute = marketData
             .GroupBy(md => new DateTime(md.Time.Year, md.Time.Month, md.Time.Day, md.Time.Hour, md.Time.Minute, 0));
         
-        var candleSticks = new List<Domain.Aggregates.MarketData.CandleStick>();
+        var candleSticks = new List<Domain.Aggregates.CandleStick.CandleStick>();
         
         foreach (var group in groupedByMinute)
         {
@@ -77,7 +73,7 @@ public class ImportMarketDataFromCsvCommandHandler : IRequestHandler<ImportMarke
             if (!minuteData.Any())
                 continue;
             
-            var candleStick = new Domain.Aggregates.MarketData.CandleStick
+            var candleStick = new Domain.Aggregates.CandleStick.CandleStick
             {
                 Time = group.Key,
                 Open = minuteData.First().Price,
@@ -90,12 +86,12 @@ public class ImportMarketDataFromCsvCommandHandler : IRequestHandler<ImportMarke
             candleSticks.Add(candleStick);
         }
         
-        await _dbContext.CandleSticks.AddRangeAsync(candleSticks, cancellationToken);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await candleStickRepository.InsertRangeAsync(candleSticks, cancellationToken);
+        await candleStickRepository.SaveChangesAsync(cancellationToken);
     }
 }
 
-public class MarketDataMap : ClassMap<Domain.Aggregates.CandleStick.MarketData>
+public class MarketDataMap : ClassMap<Domain.Aggregates.MarketData.MarketData>
 {
     public MarketDataMap()
     {
