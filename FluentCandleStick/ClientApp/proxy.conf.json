@@ -1,0 +1,14 @@
+{
+    "/api": {
+        "target": "https://localhost:7288",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    },
+    "/weatherforecast": {
+        "target": "https://localhost:7288",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+    }
+}
