@@ -1,6 +1,14 @@
+using FluentCandleStick.Application;
+using FluentCandleStick.Database;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=FluentCandleStick.db";
+
+// Register services
+builder.Services.AddApplicationServices();
+builder.Services.AddDatabaseServices(connectionString);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -10,6 +18,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddSpaStaticFiles(configuration => 
 {
     configuration.RootPath = "wwwroot";
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy.AllowAnyHeader()
+            .AllowAnyMethod()
+            .WithOrigins("http://localhost:4200");
+    });
 });
 
 var app = builder.Build();
@@ -30,6 +48,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();

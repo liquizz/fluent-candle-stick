@@ -1,0 +1,107 @@
+using CsvHelper;
+using CsvHelper.Configuration;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using FluentCandleStick.Database;
+
+namespace FluentCandleStick.Application.Aggregates.MarketData.Commands;
+
+public record ImportMarketDataFromCsvCommand(Stream CsvFileStream) : IRequest<bool>;
+
+public class ImportMarketDataFromCsvCommandHandler : IRequestHandler<ImportMarketDataFromCsvCommand, bool>
+{
+    private readonly FluentCandleStickDbContext _dbContext;
+
+    public ImportMarketDataFromCsvCommandHandler(FluentCandleStickDbContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+
+    public async Task<bool> Handle(ImportMarketDataFromCsvCommand request, CancellationToken cancellationToken)
+    {
+        try
+        {
+            // Clear existing data
+            await _dbContext.MarketData.ExecuteDeleteAsync(cancellationToken);
+            await _dbContext.CandleSticks.ExecuteDeleteAsync(cancellationToken);
+            
+            // Read CSV data
+            using var reader = new StreamReader(request.CsvFileStream);
+            using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                Delimiter = ",",
+                HasHeaderRecord = true,
+                HeaderValidated = null,
+                MissingFieldFound = null
+            });
+            
+            csv.Context.RegisterClassMap<MarketDataMap>();
+            var records = csv.GetRecords<Domain.Aggregates.CandleStick.MarketData>().ToList();
+            
+            // Add data to database
+            await _dbContext.MarketData.AddRangeAsync(records, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            
+            // Calculate and save candlestick data
+            await CalculateCandleSticks(cancellationToken);
+            
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+    
+    private async Task CalculateCandleSticks(CancellationToken cancellationToken)
+    {
+        // Get all market data ordered by time
+        var marketData = await _dbContext.MarketData
+            .OrderBy(md => md.Time)
+            .ToListAsync(cancellationToken);
+        
+        if (!marketData.Any())
+            return;
+        
+        // Group market data by minute
+        var groupedByMinute = marketData
+            .GroupBy(md => new DateTime(md.Time.Year, md.Time.Month, md.Time.Day, md.Time.Hour, md.Time.Minute, 0));
+        
+        var candleSticks = new List<Domain.Aggregates.MarketData.CandleStick>();
+        
+        foreach (var group in groupedByMinute)
+        {
+            var minuteData = group.ToList();
+            
+            if (!minuteData.Any())
+                continue;
+            
+            var candleStick = new Domain.Aggregates.MarketData.CandleStick
+            {
+                Time = group.Key,
+                Open = minuteData.First().Price,
+                Close = minuteData.Last().Price,
+                High = minuteData.Max(md => md.Price),
+                Low = minuteData.Min(md => md.Price),
+                Volume = minuteData.Sum(md => md.Quantity)
+            };
+            
+            candleSticks.Add(candleStick);
+        }
+        
+        await _dbContext.CandleSticks.AddRangeAsync(candleSticks, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
+}
+
+public class MarketDataMap : ClassMap<Domain.Aggregates.CandleStick.MarketData>
+{
+    public MarketDataMap()
+    {
+        Map(m => m.Id).Ignore();
+        Map(m => m.Time).Name("TIME").TypeConverterOption.Format("dd/MM/yyyy HH:mm:ss.fff");
+        Map(m => m.Quantity).Name("QUANTITY");
+        Map(m => m.Price).Name("PRICE");
+    }
+} 
