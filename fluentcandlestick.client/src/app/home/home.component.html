@@ -1,61 +1,54 @@
 <div class="container">
-  <h1>Candle Stick Data</h1>
+  <h1>Candlestick Data Viewer</h1>
 
-  <div class="file-upload-section">
-    <h2>Import Market Data</h2>
-    <div class="file-form">
-      <input type="file" (change)="onFileSelected($event)" accept=".csv" id="file-upload" />
-      <button (click)="uploadFile()" [disabled]="isLoading">Upload CSV</button>
-    </div>
-    @if (error) {
-      <p class="error">Error: {{ error }}</p>
-    }
+  <!-- File Upload Section -->
+  <div class="upload-section">
+    <input type="file" (change)="onFileSelected($event)" accept=".csv" [disabled]="isLoading">
+    <button (click)="uploadFile()" [disabled]="!file || isLoading">
+      {{ isLoading ? 'Uploading...' : 'Upload CSV' }}
+    </button>
+    <div class="error" *ngIf="error">{{ error }}</div>
   </div>
 
-  @if (isLoading) {
-    <div class="loading">
-      <p>Loading...</p>
-    </div>
-  }
-
-  <div class="data-section" *ngIf="hasData">
-    <h2>Candle Stick Data (Minute Intervals)</h2>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Time</th>
-            <th>Open</th>
-            <th>Close</th>
-            <th>High</th>
-            <th>Low</th>
-            <th>Volume</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (candleStick of candleStickData; track candleStick.time) {
-            <tr [ngClass]="getRowClass(candleStick)">
-              <td>{{ candleStick.time | date:'dd/MM/yyyy HH:mm' }}</td>
-              <td>{{ candleStick.open }}</td>
-              <td>{{ candleStick.close }}</td>
-              <td>{{ candleStick.high }}</td>
-              <td>{{ candleStick.low }}</td>
-              <td>{{ candleStick.volume }}</td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+  <!-- Chart Section -->
+  <div class="chart-section" *ngIf="hasData">
+    <app-candlestick-chart [data]="candleStickData"></app-candlestick-chart>
   </div>
 
+  <!-- Data Table Section -->
+  <div class="table-section" *ngIf="hasData">
+    <h2>Raw Data</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Open</th>
+          <th>High</th>
+          <th>Low</th>
+          <th>Close</th>
+          <th>Volume</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let candle of candleStickData" [class]="getRowClass(candle)">
+          <td>{{ candle.time | date:'medium' }}</td>
+          <td>{{ candle.open | number:'1.2-2' }}</td>
+          <td>{{ candle.high | number:'1.2-2' }}</td>
+          <td>{{ candle.low | number:'1.2-2' }}</td>
+          <td>{{ candle.close | number:'1.2-2' }}</td>
+          <td>{{ candle.volume | number:'1.2-2' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- No Data Message -->
   <div class="no-data" *ngIf="!hasData && !isLoading">
-    <p>No data available. Please import a CSV file to see candle stick data.</p>
-    <p class="csv-format">
-      CSV Format: <br>
-      TIME,QUANTITY,PRICE <br>
-      17/06/2022 12:23:17.308,1000000,1.36257 <br>
-      17/06/2022 12:00:24.118,500000,1.36273 <br>
-      ...
-    </p>
+    No data available. Please upload a CSV file.
+  </div>
+
+  <!-- Loading Indicator -->
+  <div class="loading" *ngIf="isLoading">
+    Loading...
   </div>
 </div>

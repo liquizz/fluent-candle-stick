@@ -4,11 +4,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { CandleStickService } from '../services/candlestick.service';
 import { CandleStick } from '../models/candlestick.model';
+import { CandlestickChartComponent } from '../components/candlestick-chart/candlestick-chart.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormsModule],
+  imports: [CommonModule, HttpClientModule, FormsModule, CandlestickChartComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.less'
 })
