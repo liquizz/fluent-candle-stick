@@ -1,5 +1,6 @@
 using FluentCandleStick.Application;
 using FluentCandleStick.Database;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,13 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Apply migrations
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<FluentCandleStickDbContext>();
+    await db.Database.EnsureCreatedAsync();
+}
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
