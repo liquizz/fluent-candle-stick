@@ -7,10 +7,16 @@
       <input type="file" (change)="onFileSelected($event)" accept=".csv" id="file-upload" />
       <button (click)="uploadFile()" [disabled]="isLoading">Upload CSV</button>
     </div>
-    <p class="error" *ngIf="error">{{ error }}</p>
+    @if (error) {
+      <p class="error">Error: {{ error }}</p>
+    }
   </div>
 
-  <div class="loading" *ngIf="isLoading">Loading...</div>
+  @if (isLoading) {
+    <div class="loading">
+      <p>Loading...</p>
+    </div>
+  }
 
   <div class="data-section" *ngIf="hasData">
     <h2>Candle Stick Data (Minute Intervals)</h2>
@@ -27,14 +33,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let candleStick of candleStickData" [ngClass]="getRowClass(candleStick)">
-            <td>{{ candleStick.time | date:'dd/MM/yyyy HH:mm' }}</td>
-            <td>{{ candleStick.open }}</td>
-            <td>{{ candleStick.close }}</td>
-            <td>{{ candleStick.high }}</td>
-            <td>{{ candleStick.low }}</td>
-            <td>{{ candleStick.volume }}</td>
-          </tr>
+          @for (candleStick of candleStickData; track candleStick.time) {
+            <tr [ngClass]="getRowClass(candleStick)">
+              <td>{{ candleStick.time | date:'dd/MM/yyyy HH:mm' }}</td>
+              <td>{{ candleStick.open }}</td>
+              <td>{{ candleStick.close }}</td>
+              <td>{{ candleStick.high }}</td>
+              <td>{{ candleStick.low }}</td>
+              <td>{{ candleStick.volume }}</td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>
