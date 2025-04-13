@@ -2,6 +2,12 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentCandleStick", "FluentCandleStick\FluentCandleStick.csproj", "{14EB5341-EB89-449B-8639-881F13B5D330}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentCandleStick.Application", "FluentCandleStick.Application\FluentCandleStick.Application.csproj", "{0EA6B92C-9041-4D03-B557-BF1FDB7CB75D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentCandleStick.Domain", "FluentCandleStick.Domain\FluentCandleStick.Domain.csproj", "{6505F363-C066-465E-B294-45B20712A071}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentCandleStick.Database", "FluentCandleStick.Database\FluentCandleStick.Database.csproj", "{208896C9-0818-438E-AC20-DC46B196CDAF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +18,17 @@ Global
 		{14EB5341-EB89-449B-8639-881F13B5D330}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{14EB5341-EB89-449B-8639-881F13B5D330}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{14EB5341-EB89-449B-8639-881F13B5D330}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EA6B92C-9041-4D03-B557-BF1FDB7CB75D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EA6B92C-9041-4D03-B557-BF1FDB7CB75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EA6B92C-9041-4D03-B557-BF1FDB7CB75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EA6B92C-9041-4D03-B557-BF1FDB7CB75D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6505F363-C066-465E-B294-45B20712A071}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6505F363-C066-465E-B294-45B20712A071}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6505F363-C066-465E-B294-45B20712A071}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6505F363-C066-465E-B294-45B20712A071}.Release|Any CPU.Build.0 = Release|Any CPU
+		{208896C9-0818-438E-AC20-DC46B196CDAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{208896C9-0818-438E-AC20-DC46B196CDAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{208896C9-0818-438E-AC20-DC46B196CDAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{208896C9-0818-438E-AC20-DC46B196CDAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
