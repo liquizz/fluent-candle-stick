@@ -1,0 +1,33 @@
+<div class="table-card card">
+  <div class="card-header">
+    <h2>Price Data</h2>
+  </div>
+  <div class="card-body">
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Open</th>
+            <th>High</th>
+            <th>Low</th>
+            <th>Close</th>
+            <th>Volume</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (candle of candleStickData; track candle.time) {
+            <tr [class]="getRowClass(candle)">
+              <td>{{ candle.time | date:'medium' }}</td>
+              <td>{{ candle.open | number:'1.2-5' }}</td>
+              <td>{{ candle.high | number:'1.2-5' }}</td>
+              <td>{{ candle.low | number:'1.2-5' }}</td>
+              <td>{{ candle.close | number:'1.2-5' }}</td>
+              <td>{{ candle.volume | number:'1.2-5' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

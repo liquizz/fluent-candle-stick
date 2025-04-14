@@ -1,0 +1,37 @@
+<div class="card upload-card">
+  <div class="card-header">
+    <h2>Upload Data</h2>
+  </div>
+  <div class="card-body">
+    <div class="upload-section">
+      <div class="file-input-container">
+        <label for="file-upload" class="file-label">
+          @if (!file) {
+            <span>Choose CSV File</span>
+          } @else {
+            <span class="file-name">{{ file.name }}</span>
+          }
+        </label>
+        <input id="file-upload" type="file" (change)="onFileSelected($event)" accept=".csv" [disabled]="isLoading">
+      </div>
+      <button class="primary-button" (click)="uploadFile()" [disabled]="!file || isLoading">
+        <span>{{ isLoading ? 'Processing...' : 'Upload CSV' }}</span>
+      </button>
+    </div>
+    <div class="hint-text">
+      <p>Upload a CSV file with candlestick data in the format: time, open, high, low, close, volume</p>
+    </div>
+    @if (error) {
+      <div class="error-message">
+        <span>{{ error }}</span>
+      </div>
+    }
+  </div>
+</div>
+
+@if (isLoading) {
+  <div class="loading-container">
+    <div class="loading-spinner"></div>
+    <p>Processing data...</p>
+  </div>
+}
