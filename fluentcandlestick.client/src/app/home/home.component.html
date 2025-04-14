@@ -26,10 +26,11 @@
       <div class="hint-text">
         <p>Upload a CSV file with candlestick data in the format: time, open, high, low, close, volume</p>
       </div>
-      <div class="error-message" *ngIf="error">
-        <span class="icon">⚠️</span>
-        <span>{{ error }}</span>
-      </div>
+      @if (error) {
+        <div class="error-message">
+          <span>{{ error }}</span>
+        </div>
+      }
     </div>
   </div>
 
@@ -43,50 +44,55 @@
   @if (!hasData && !isLoading) {
     <div class="no-data-container">
       <div class="no-data-icon">📊</div>
-      <p>No data available.</p>
+      <p>No data available</p>
     </div>
   }
 
-  <div class="chart-card card" *ngIf="hasData">
-    <div class="card-header">
-      <h2>Candlestick Chart</h2>
+  @if (hasData) {
+    <div class="chart-card card">
+      <div class="card-header">
+        <h2>Candlestick Chart</h2>
     </div>
     <div class="card-body">
-      <app-candlestick-chart [data]="candleStickData"></app-candlestick-chart>
-    </div>
-  </div>
-
-  <div class="table-card card" *ngIf="hasData">
-    <div class="card-header">
-      <h2>Price Data</h2>
-    </div>
-    <div class="card-body">
-      <div class="table-container">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Open</th>
-              <th>High</th>
-              <th>Low</th>
-              <th>Close</th>
-              <th>Volume</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (candle of candleStickData; track candle.time) {
-              <tr [class]="getRowClass(candle)">
-                <td>{{ candle.time | date:'medium' }}</td>
-                <td>{{ candle.open | number:'1.2-5' }}</td>
-                <td>{{ candle.high | number:'1.2-5' }}</td>
-                <td>{{ candle.low | number:'1.2-5' }}</td>
-                <td>{{ candle.close | number:'1.2-5' }}</td>
-                <td>{{ candle.volume | number:'1.2-5' }}</td>
-              </tr>
-            }
-          </tbody>
-        </table>
+        <app-candlestick-chart [data]="candleStickData"></app-candlestick-chart>
       </div>
     </div>
-  </div>
+  }
+
+
+  @if (hasData) {
+    <div class="table-card card">
+      <div class="card-header">
+        <h2>Price Data</h2>
+      </div>
+      <div class="card-body">
+        <div class="table-container">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Open</th>
+                <th>High</th>
+                <th>Low</th>
+                <th>Close</th>
+                <th>Volume</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (candle of candleStickData; track candle.time) {
+                <tr [class]="getRowClass(candle)">
+                  <td>{{ candle.time | date:'medium' }}</td>
+                  <td>{{ candle.open | number:'1.2-5' }}</td>
+                  <td>{{ candle.high | number:'1.2-5' }}</td>
+                  <td>{{ candle.low | number:'1.2-5' }}</td>
+                  <td>{{ candle.close | number:'1.2-5' }}</td>
+                  <td>{{ candle.volume | number:'1.2-5' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
 </div>
