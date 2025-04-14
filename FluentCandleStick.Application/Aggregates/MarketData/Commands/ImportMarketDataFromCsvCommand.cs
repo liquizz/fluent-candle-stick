@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using CsvHelper;
 using CsvHelper.Configuration;
 using MediatR;
@@ -41,7 +42,6 @@ public class ImportMarketDataFromCsvCommandHandler(
             await marketDataRepository.InsertRangeAsync(records, cancellationToken);
             await marketDataRepository.SaveChangesAsync(cancellationToken);
             
-            // Calculate and save candlestick data
             await CalculateCandleSticks(cancellationToken);
             
             return true;
@@ -55,9 +55,9 @@ public class ImportMarketDataFromCsvCommandHandler(
     private async Task CalculateCandleSticks(CancellationToken cancellationToken)
     {
         // Get all market data ordered by time
-        var marketData = await marketDataRepository.GetOrderedByTimeAsync();
+        var marketData = (await marketDataRepository.GetOrderedByTimeAsync(cancellationToken)).ToList();
         
-        if (!marketData.Any())
+        if (marketData.Count == 0)
             return;
         
         // Group market data by minute
@@ -70,7 +70,7 @@ public class ImportMarketDataFromCsvCommandHandler(
         {
             var minuteData = group.ToList();
             
-            if (!minuteData.Any())
+            if (minuteData.Count == 0)
                 continue;
             
             var candleStick = new Domain.Aggregates.CandleStick.CandleStick
