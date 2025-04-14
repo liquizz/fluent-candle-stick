@@ -7,4 +7,6 @@ public interface ICandleStickRepository : IRepositoryBase
     Task ClearAsync(CancellationToken cancellationToken = default);
     
     Task InsertRangeAsync(IEnumerable<CandleStick> candleSticks, CancellationToken cancellationToken = default);
+    
+    Task<IEnumerable<CandleStick>> GetOrderedByTimeAsync(CancellationToken cancellationToken = default);
 }

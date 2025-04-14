@@ -27,7 +27,7 @@ public class CandleStickController(ISender mediator) : ControllerBase
 
         if (result)
             return Ok("Data imported successfully");
-        else
-            return BadRequest("Failed to import data");
+        
+        return BadRequest("Failed to import data");
     }
 }

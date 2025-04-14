@@ -17,4 +17,11 @@ public class CandleStickRepository(FluentCandleStickDbContext dbContext) : Repos
     {
         await _dbContext.BulkInsertAsync(candleSticks, cancellationToken: cancellationToken);
     }
+
+    public async Task<IEnumerable<CandleStick>> GetOrderedByTimeAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.CandleSticks
+            .OrderBy(cs => cs.Time)
+            .ToListAsync(cancellationToken: cancellationToken);
+    }
 }
