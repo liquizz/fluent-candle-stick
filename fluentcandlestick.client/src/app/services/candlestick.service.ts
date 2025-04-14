@@ -15,9 +15,11 @@ export class CandleStickService {
     return this.http.get<CandleStick[]>(this.apiUrl);
   }
 
-  importCsvData(file: File): Observable<any> {
+  importCsvData(file: File): Observable<string> {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post(`${this.apiUrl}/import`, formData);
+    return this.http.post(`${this.apiUrl}/import`, formData, {
+      responseType: 'text'
+    });
   }
 }
